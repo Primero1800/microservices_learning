@@ -8,12 +8,14 @@ async def fetch_data(session, url):
 async def main():
     urls = [
         "https://primero1800.store/api",
-
+        "https://primero1800.store/api/detail/2/",
+        "https://primero1800.store/api/admin/orders/",
     ]
     async with aiohttp.ClientSession() as session:
         tasks = [fetch_data(session, url) for url in urls]
         results = await asyncio.gather(*tasks)
     for result in results:
         print(result)
+        print('***************************************')
 
 asyncio.run(main())
