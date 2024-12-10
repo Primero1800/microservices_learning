@@ -38,28 +38,10 @@ async def fetch_users_backfeedsfrom_db():
     for user in users:
         data[user['email']] = {
             'id': user['id'],
-            'posts': await conn.fetch(f"SELECT name, review, product_id FROM posts_post WHERE user_id = {user['id']}"),
-            'votes': await conn.fetch(f"SELECT name, review, product_id, stars FROM store_vote WHERE user_id = {user['id']}"),
+            'posts': [dict(item) for item in await conn.fetch(f"SELECT name, review, title FROM posts_post LEFT JOIN store_product ON posts_post.product_id = store_product.id WHERE user_id = {user['id']}")],
+           'votes': [dict(item) for item in await conn.fetch(f"SELECT name, review, stars, title FROM store_vote LEFT JOIN store_product ON store_vote.product_id = store_product.id WHERE user_id = {user['id']}")]
         }
 
-        posts = []
-        for record in data[user['email']]['posts']:
-            item = dict(record)
-            if item['product_id']:
-                product_title = await conn.fetch(f"SELECT title FROM store_product WHERE id = {item['product_id']}")
-                item['product'] = product_title[0]['title']
-            del item['product_id']
-            posts.append(item)
-        data[user['email']]['posts'] = posts
-
-        votes = []
-        for record in data[user['email']]['votes']:
-            item = dict(record)
-            product_title = await conn.fetch(f"SELECT title FROM store_product WHERE id = {item['product_id']}")
-            item['product'] = product_title[0]['title']
-            del item['product_id']
-            votes.append(item)
-        data[user['email']]['votes'] = votes
 
     await conn.close()
     return data
