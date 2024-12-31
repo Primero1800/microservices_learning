@@ -81,7 +81,4 @@ if __name__ == "__main__":
     b = 'solenyiogurets'
     a.join(b)
 
-    cmd = 'bat'
-    print(f"Hello from {format(cmd)}")
-
 
