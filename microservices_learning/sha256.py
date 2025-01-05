@@ -16,3 +16,6 @@ if __name__ == "__main__":
     pyshorteners_input = pyshorteners.Shortener().tinyurl.short(input_)
     print(f"PYSHORTENERS: {pyshorteners_input}")
 
+    print()
+    print()
+
