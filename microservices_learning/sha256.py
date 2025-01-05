@@ -10,12 +10,14 @@ if __name__ == "__main__":
     sha256_input = sha256(input_encoded)
     print(f"INPUT ENCODED SHA256: {sha256_input.hexdigest()}")
 
-    print()
     print('*******************************************************')
     print("PYSHORTENERS")
     print()
     pyshorteners_input = pyshorteners.Shortener().tinyurl.short(input_)
     print(f"PYSHORTENERS: {pyshorteners_input}")
+
+    print()
+    print()
 
     print()
     print()
