@@ -1,4 +1,27 @@
-from itertools import count
+import logging
+import sys
+
+# logger2 = logging.getLogger(__name__)
+# logger2.setLevel(logging.DEBUG)
+# handler2 = logging.FileHandler(f"{__name__}.log", mode='a')
+# formatter2 = logging.Formatter("%(name)s %(asctime)s %(levelname)s %(message)s")
+#
+# handler2.setFormatter(formatter2)
+# logger2.addHandler(handler2)
+#
+# stream_handler = logging.StreamHandler(stream=sys.stderr)
+# logger2.addHandler(stream_handler)
+#
+# logger2.propagate = True
+
+#logging.basicConfig(filename=f"{__name__}.log", filemode='a', format=formatter2._fmt, level=logging.INFO)
+
+#logging.basicConfig(filename=f"{__name__}.log", filemode='a', level=logging.INFO)
+
+
+
+
+
 
 module_singleton_object = None
 module_singleton_instances = {}
@@ -28,20 +51,20 @@ def singleton(class_):
     return getinstance
 
 #@singleton
-class Logger(Singleton):
+class Loggger(Singleton):
     pass
 
 #@singleton
-class Supper(Singleton):
+class Suppper(Singleton):
     pass
 
 
 if __name__ == "__main__":
 
-    l1 = Logger()
-    l2 = Logger()
-    s1 = Supper()
-    s2 = Supper()
+    l1 = Loggger()
+    l2 = Loggger()
+    s1 = Suppper()
+    s2 = Suppper()
 
     print(l1, l2, s1, s2, l1 == l2)
 
@@ -83,6 +106,12 @@ if __name__ == "__main__":
             print(element)
         else:
             break
+
+    #logger2.error('SWINTUS')
+
+    a = 10
+    b = 0
+    c = a / b
 
 
 
