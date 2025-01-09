@@ -8,13 +8,11 @@ sys.stderr = file_err
 
 
 
-
-
-
 if __name__ == "__main__":
 
     logger = logging.getLogger()
     logger.setLevel(logging.INFO)
+
 
     formatter = logging.Formatter('%(asctime)s | %(levelname)s | %(message)s')
 
@@ -29,8 +27,11 @@ if __name__ == "__main__":
     logger.addHandler(file_handler)
     logger.addHandler(stdout_handler)
 
+    logger.warning("Preved, medved")
+
+
     test_dict = {}
-    print(test_dict['test'])
+    print(test_dict['test'], 10/0)
 
 
     sys.stderr = original_stderr
