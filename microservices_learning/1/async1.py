@@ -23,6 +23,7 @@ async def main():
     running = tasks
     while running:
         completed, running = await asyncio.wait(running, return_when=asyncio.FIRST_COMPLETED)
+
         for task in completed:
             print(task.result())
 
@@ -30,3 +31,4 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
+    #asyncio.get_event_loop().run_until_complete(main())
