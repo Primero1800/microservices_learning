@@ -14,10 +14,10 @@ async def main():
     while True:
         data = input()
         if data == 'q':
-            data = 'client escaped'.encode('utf-8')
+            data = 'client escaped\n'.encode('utf-8')
             escape = True
         else:
-            data = data.encode('utf-8')
+            data = (data+'\n').encode('utf-8')
 
         writer.write(data)
         await writer.drain()

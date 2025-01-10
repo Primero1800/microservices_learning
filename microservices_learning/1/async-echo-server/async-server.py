@@ -4,13 +4,14 @@ async def handler(reader, writer):
     serve = True
     while serve:
 
-        data = await reader.read(128)
+        #data = await reader.read(128)
+        data = await reader.readline()
         if data:
             message = data.decode()
             addr = writer.get_extra_info('peername')
-            print(f"{addr[0]}:{addr[1]}# {message}")
+            print(f"{addr[0]}:{addr[1]}# {message.strip('\n')}")
 
-            message_back = (f"HTTP/1.0 200 OK ** {message} received").encode('utf-8')
+            message_back = (f"HTTP/1.0 200 OK ** {message.strip('\n')} received").encode('utf-8')
             writer.write(message_back)
             await writer.drain()
         else:
