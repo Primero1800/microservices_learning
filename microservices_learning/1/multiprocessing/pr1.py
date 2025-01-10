@@ -37,6 +37,7 @@ def run_threads(size, executionUnitsCount):
     return results
 
 
+
 @timed
 def run_processes(size, executionUnitsCount):
     with ProcessPoolExecutor() as executor:
