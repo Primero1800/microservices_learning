@@ -8,7 +8,7 @@ async def handler(reader, writer):
         if data:
             message = data.decode()
             addr = writer.get_extra_info('peername')
-            print("Received %r from %r" % (message, addr))
+            print(f"{addr[0]}:{addr[1]}# {message}")
 
             message_back = (f"HTTP/1.0 200 OK ** {message} received").encode('utf-8')
             writer.write(message_back)
