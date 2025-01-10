@@ -66,7 +66,7 @@ async def get_status(url):
 
     return status
 
-
+@timed
 async def main():
     tasks = [asyncio.create_task(get_status(url), name=url) for url in URLS]
 
