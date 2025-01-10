@@ -76,14 +76,13 @@ async def get_status(url):
 
     return status
 
+
 @async_timed
 async def main():
     tasks = [asyncio.create_task(get_status(url), name=url) for url in URLS]
+    [task.add_done_callback(lambda task: print(f'{task.get_name():30}:\t{task.result()}')) for task in tasks]
 
-    while tasks:
-        done, tasks = await asyncio.wait(tasks, return_when=asyncio.FIRST_COMPLETED)
-        for completed_task in done:
-            print(f'{completed_task.get_name():30}:\t{completed_task.result()}')
+    await asyncio.gather(*tasks)
 
 
 if __name__ == "__main__":
