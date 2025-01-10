@@ -44,21 +44,18 @@ class OpenConnectionManager:
 
 async def _send_request(writer, url_parsed):
     query = f'GET {url_parsed.path} HTTP/1.1\r\nHost: {url_parsed.hostname}\r\n\r\n'
-    writer.write(query.encode())
+    writer.write(query.encode('utf-8'))
     await writer.drain()
-
 
 
 async def _get_response(reader):
     response = await reader.readline()
-    return response.decode().strip()
-
+    return response.decode('utf-8').strip()
 
 
 async def request_for_responce(reader, writer, url_parsed):
     await _send_request(writer, url_parsed)
     return await _get_response(reader)
-
 
 
 async def get_status(url):
