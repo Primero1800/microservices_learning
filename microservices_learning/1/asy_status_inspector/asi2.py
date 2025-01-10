@@ -1,7 +1,16 @@
 import asyncio
 import urllib.parse
+from datetime import datetime
 
 
+
+def async_timed(func):
+    async def wrapper(*args, **kwargs):
+        start_time = datetime.now()
+        result = await func(*args, **kwargs)
+        print(f"{func.__name__} worked: {datetime.now()-start_time}")
+        return result
+    return wrapper
 
 URLS = [
     'https://www.google.com/',
@@ -68,7 +77,7 @@ async def get_status(url):
 
     return status
 
-@timed
+@async_timed
 async def main():
     tasks = [asyncio.create_task(get_status(url), name=url) for url in URLS]
 
