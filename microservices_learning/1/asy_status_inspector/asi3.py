@@ -1,7 +1,6 @@
 import asyncio
 import urllib.parse
 from datetime import datetime
-from functools import partial
 
 
 def async_timed(func):
