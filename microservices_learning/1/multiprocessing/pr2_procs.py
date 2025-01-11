@@ -43,10 +43,8 @@ def counter_worker(name, counter, finish, buffer):
                 print(f'{name} finished')
                 break
 
-    print(f"{name} ** {inner_counter} ** {datetime.now() - start_time}")
     data = (name, inner_counter, datetime.now() - start_time)
     buffer.put(data)
-    d = 2
 
 
 if __name__ == "__main__":
@@ -58,6 +56,7 @@ if __name__ == "__main__":
             target=counter_worker,
             name=f"proc_{i}",
             args=(f"proc_{i}", COUNTER, FINISH, pr_queue.buffer),
+            daemon=True,
         ) for i in range(WORKERS)
     ]
     time.sleep(0.5)
