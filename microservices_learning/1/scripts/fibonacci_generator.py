@@ -1,3 +1,12 @@
+
+def fibonacci_recursion(n):
+    if n == 0:
+        return 0
+    if n == 1:
+        return 1
+    return fibonacci_recursion(n - 2) + fibonacci_recursion(n - 1)
+
+
 class Fibonacci:
     def __init__(self, n=1):
         self._fibonacci_numbers = iter(self._fibonacci())
@@ -34,10 +43,4 @@ if __name__ == "__main__":
     print(*fibonacci_seq)
 
 
-
-
-
-
-    # print()
-    # fibonacci_seq = FibonacciSeq(25)
-    # print(fibonacci_seq.)
+    print(fibonacci_recursion(11))
