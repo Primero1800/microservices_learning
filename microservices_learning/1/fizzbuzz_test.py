@@ -80,10 +80,35 @@ def start_fizzbuzz(limit, fizz, buzz):
         else:
             print(i)
 
+def start_fizzbuzzranging(limit, fizz, buzz):
+    print('FIZZ / BUZZ ranging')
+    i = 1
+    seq = []
+
+    while i <= limit:
+        if not seq:
+            if i % fizz == 0:
+                seq.append(i)
+            else:
+                print(i, end=', ')
+        else:
+            seq.append(i)
+            if i % buzz == 0:
+                print(tuple(seq), end =' ')
+                seq = []
+        i += 1
+
+    [print(n, end=', ') for n in seq]
+
 
 
 if __name__ == "__main__":
 
     limit = get_limit(MAXIMUM)
     fizz, buzz = get_fizzbuzz(limit)
-    start_fizzbuzz(limit, fizz, buzz)
+
+    #start_fizzbuzz(limit, fizz, buzz)
+
+    start_fizzbuzzranging(limit, fizz, buzz)
+
+
