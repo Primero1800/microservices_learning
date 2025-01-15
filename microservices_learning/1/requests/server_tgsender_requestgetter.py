@@ -43,11 +43,11 @@ async def handler(reader, writer):
                 response_headers = [
                     'HTTP/1.1 200 OK',
                     'Content-Type: text/plain; charset=utf-8',
-                    f'Content-Length: {len(response_body)}',
+                    f'Content-Length: {len(response_body)+15}',
                     'Connection: close',
                     '',
                     'YOUR REQUEST:',
-                    response_body
+                    response_body,
                 ]
                 lines = []
 
