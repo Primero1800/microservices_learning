@@ -1,7 +1,8 @@
-
+import asyncio
 import telegram
 
 
+SEND_TO_TELEGRAM = False
 TELEGRAM_TOKEN ='7750977038:AAFjVHscmTJb-0IKs1YPDenHDCnXe1rt1p4'
 TELEGRAM_CHAT_ID ='-1002376523103'
 
@@ -16,12 +17,6 @@ async def send_telegram_message(message):
         await asyncio.sleep(0)
         return ex
 
-#
-# def send_message_to_bot(sender, instance, **kwargs):
-#     asyncio.run(send_telegram_message(message=create_message(instance, _('Сообщение').upper())))
-
-
-import asyncio
 
 async def handler(reader, writer):
     serve, escape = True, False
@@ -34,8 +29,9 @@ async def handler(reader, writer):
             lines.append(decoded_line)
         else:
             if lines:
-                answer = await send_telegram_message(message=lines)
-                print(answer)
+                if SEND_TO_TELEGRAM:
+                    answer = await send_telegram_message(message=lines)
+                    print(answer)
                 [print(line) for line in lines]
                 print()
 
