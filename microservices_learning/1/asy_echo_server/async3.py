@@ -1,5 +1,4 @@
 import asyncio
-from asyncio import StreamReader, StreamWriter
 
 class StartClient:
     def __init__(self, host, port):
