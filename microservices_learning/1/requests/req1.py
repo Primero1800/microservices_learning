@@ -2,7 +2,7 @@ import urllib.parse
 
 import requests
 
-def get_responce_from_localhost():
+def get_response_from_localhost():
     url = 'http://127.0.0.1:8000/'
     responce = requests.get(url)
     return responce.content.decode('utf-8')
@@ -20,7 +20,9 @@ def image_loader(url, file_name=None):
 
 if __name__ == "__main__":
 
-    image_loader('https://primero1800.store/media/images/104/1.png')
+    # image_loader('https://primero1800.store/media/images/104/1.png')
+    # get_response_from_localhost()
+    pass
 
 
 
