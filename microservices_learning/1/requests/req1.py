@@ -1,3 +1,5 @@
+import urllib.parse
+
 import requests
 
 def get_responce_from_localhost():
@@ -5,12 +7,22 @@ def get_responce_from_localhost():
     responce = requests.get(url)
     return responce.content.decode('utf-8')
 
+
+def image_loader(url, file_name=None):
+    # image = requests.get('https://primero1800.store/media/images/104/1.png')
+    image = requests.get(url)
+    if not file_name:
+        file_name = urllib.parse.urlsplit(url).path.split('/')[-1]
+        if file_name:
+            with open(file_name, 'wb') as file:
+                file.write(image.content)
+
+
 if __name__ == "__main__":
 
-    # image = requests.get('https://primero1800.store/media/images/104/1.png')
-    # with open('image1.png', 'wb') as file:
-    #     file.write(image.content)
+    image_loader('https://primero1800.store/media/images/104/1.png')
 
-    print(get_responce_from_localhost())
+
+
 
 
