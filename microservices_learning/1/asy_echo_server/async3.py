@@ -9,6 +9,7 @@ class StartClient:
         reader, writer = await asyncio.open_connection(
             host=self.host,
             port=self.port,
+
         )
         self.reader = reader
         self.writer = writer
