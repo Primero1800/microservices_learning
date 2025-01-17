@@ -39,7 +39,7 @@ async def main():
 
     not_exit = True
     while not_exit:
-    #process2 =  await asyncio.create_subprocess_shell('cat 1.py | wc -l', stdin=asyncio.subprocess.PIPE, stdout=asyncio.subprocess.PIPE)
+    #process2 =  await asyncio.create_subprocess_shell('cat outer1.py | wc -l', stdin=asyncio.subprocess.PIPE, stdout=asyncio.subprocess.PIPE)
         command = input()
         if command == 'q':
             break

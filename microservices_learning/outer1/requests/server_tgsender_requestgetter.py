@@ -37,7 +37,7 @@ async def handler(reader, writer):
 
                 response_body = '\r\n'.join(lines)
                 response_headers = [
-                    'HTTP/1.1 200 OK',
+                    'HTTP/outer1.outer1 200 OK',
                     'Content-Type: text/plain; charset=utf-8',
                     f'Content-Length: {len(response_body)+15}',
                     'Connection: close',
