@@ -6,7 +6,7 @@ import pytest_asyncio
 import pytest
 from unittest.mock import Mock
 
-from outer1.asy_status_inspector.asi3 import _get_response, _send_request
+from outer1.asy_status_inspector.asi3 import _get_response, _send_request, OpenConnectionManager
 
 # Установите область видимости цикла событий для всех асинхронных фикстур
 pytest_plugins = ['pytest_asyncio']
@@ -78,4 +78,30 @@ async def test_send_request():
     assert len(drained) > 0
     assert len(buffer) == 0
     assert drained.pop() == b'GET  HTTP/1.1\r\nHost: football.kulichki.net\r\n\r\n'
+
+
+@pytest.mark.asyncio
+@pytest.mark.cls
+async def test_OpenConnectionManager():
+    URLS = [
+        'https://www.google.com/',
+        'http://government.ru/structure/',
+        'https://www.youtube.com/watch?v=5_9x7czHJOM',
+        'https://primero1800.store/',
+        'default',
+        'http://invalid'
+    ]
+
+    cms = [OpenConnectionManager(urllib.parse.urlsplit(url)) for url in URLS]
+
+    assert cms[1].url_parsed.hostname == 'government.ru'
+    assert cms[2].url_parsed.hostname == 'www.youtube.com'
+    assert cms[3].url_parsed.hostname == 'primero1800.store'
+    assert cms[4].url_parsed.hostname is None
+    assert cms[5].url_parsed.hostname == 'invalid'
+
+    assert cms[0].url_parsed.scheme == 'https'
+    assert cms[1].url_parsed.scheme == 'http'
+    assert cms[4].url_parsed.scheme == ''
+    assert cms[5].url_parsed.scheme == 'http'
 
