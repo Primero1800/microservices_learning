@@ -1,14 +1,10 @@
 import asyncio
 import urllib
-from functools import partial
-
-import pytest_asyncio
 import pytest
 from unittest.mock import Mock
 
-from outer1.asy_status_inspector.asi3 import _get_response, _send_request, OpenConnectionManager
+from outer1.asy_status_inspector.asi3 import _get_response, _send_request, OpenConnectionManager, get_status
 
-# Установите область видимости цикла событий для всех асинхронных фикстур
 pytest_plugins = ['pytest_asyncio']
 pytest_asyncio_enable_loop = True
 
@@ -56,7 +52,6 @@ async def test_send_request():
         nonlocal buffer, drained
         drained.clear()
         buffer.append(query)
-    #writer.write.side_effect = partial(_write, query)
     writer.write.side_effect = _write
 
     async def _drain():
@@ -82,7 +77,7 @@ async def test_send_request():
 
 @pytest.mark.asyncio
 @pytest.mark.cls
-async def test_OpenConnectionManager():
+async def test_get_status():
     URLS = [
         'https://www.google.com/',
         'http://government.ru/structure/',
@@ -92,6 +87,7 @@ async def test_OpenConnectionManager():
         'http://invalid'
     ]
 
+    statuses = [await get_status(url) for url in URLS]
     cms = [OpenConnectionManager(urllib.parse.urlsplit(url)) for url in URLS]
 
     assert cms[1].url_parsed.hostname == 'government.ru'
@@ -104,4 +100,18 @@ async def test_OpenConnectionManager():
     assert cms[1].url_parsed.scheme == 'http'
     assert cms[4].url_parsed.scheme == ''
     assert cms[5].url_parsed.scheme == 'http'
+
+    assert statuses[0]  == 'HTTP/1.1 200 OK'
+    assert statuses[1] == 'HTTP/1.1 200 OK'
+    assert statuses[2] == 'HTTP/1.1 301 Moved Permanently'
+    assert statuses[3] == 'HTTP/1.1 200 OK'
+    assert statuses[4] == 'HTTP/1.1 400 Bad Request'
+    assert statuses[5] == '[Errno -2] Name or service not known'
+
+
+
+
+
+
+
 

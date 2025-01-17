@@ -1,5 +1,6 @@
 import asyncio
 import urllib.parse
+from _socket import gaierror
 from datetime import datetime
 
 
@@ -72,8 +73,13 @@ async def request_for_responce(reader, writer, url_parsed):
 async def get_status(url):
     url_parsed = urllib.parse.urlsplit(url)
 
-    async with OpenConnectionManager(url_parsed) as (reader, writer):
-        status = await request_for_responce(reader, writer, url_parsed)
+    try:
+        async with OpenConnectionManager(url_parsed) as (reader, writer):
+            status = await request_for_responce(reader, writer, url_parsed)
+    except gaierror as error:
+        status = str(error)
+    except Exception as error:
+        status = str(error)
 
     return status
 
