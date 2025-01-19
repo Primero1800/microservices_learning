@@ -12,37 +12,39 @@ pytest_asyncio_enable_loop = True
 def asyncio_default_fixture_loop_scope(request):
     return 'function'
 
+
+@pytest.mark.parametrize(
+    ('entered', 'expected'),
+    [
+        ('Однажды в студеную зимнюю пору ', 'Однажды в студеную зимнюю пору'),
+        ('я из лесу вышел - был сильный мороз... \n', 'я из лесу вышел - был сильный мороз...'),
+        ('гляжу: поднимается медленно в гору лошадка, \r\n', 'гляжу: поднимается медленно в гору лошадка,'),
+        ('везущая хворосту воз\r ', 'везущая хворосту воз'),
+        ('', ''),
+        ('rr\r\n', 'rr'),
+    ]
+)
 @pytest.mark.asyncio
-async def test_get_response():
+async def test_get_response(entered, expected):
     reader = Mock(spec=asyncio.StreamReader)
 
-    test_cases = [
-        'Однажды в студеную зимнюю пору ',
-        'я из лесу вышел - был сильный мороз... \n',
-        'гляжу: поднимается медленно в гору лошадка, \r\n',
-        'везущая хворосту воз\r ',
-        '',
-        'rr\r\n',
-    ]
-    index = -1
     async def read_data():
-        nonlocal test_cases
-        nonlocal index
-        await asyncio.sleep(0)  # Не блокирующий режим чтения
-        index += 1
-        return test_cases[index].encode('utf-8')
-
+        await asyncio.sleep(0)
+        return entered.encode('utf-8')
     reader.readline.side_effect = read_data
 
-    for i in range(len(test_cases)-1):
-        result = await _get_response(reader)
-        assert result == test_cases[i].strip().strip('\n').strip('\r')
-
-    assert await _get_response(reader) == 'rr'
+    assert await _get_response(reader) == expected
 
 
+@pytest.mark.parametrize(
+    ('entered', 'expected'),
+    [
+        ('http://primero1800.store', b'GET  HTTP/1.1\r\nHost: primero1800.store\r\n\r\n'),
+        ('http://football.kulichki.net', b'GET  HTTP/1.1\r\nHost: football.kulichki.net\r\n\r\n'),
+    ]
+)
 @pytest.mark.asyncio
-async def test_send_request():
+async def test_send_request(entered, expected):
     writer = Mock(spec=asyncio.StreamWriter)
 
     buffer = []
@@ -62,51 +64,34 @@ async def test_send_request():
         drained.append(result[0])
     writer.drain.side_effect = _drain
 
-    url_parsed = urllib.parse.urlsplit('http://primero1800.store')
+    url_parsed = urllib.parse.urlsplit(entered)
     await _send_request(writer, url_parsed)
     assert len(drained) > 0
     assert len(buffer) == 0
-    assert drained.pop() == b'GET  HTTP/1.1\r\nHost: primero1800.store\r\n\r\n'
-
-    url_parsed = urllib.parse.urlsplit('http://football.kulichki.net')
-    await _send_request(writer, url_parsed)
-    assert len(drained) > 0
-    assert len(buffer) == 0
-    assert drained.pop() == b'GET  HTTP/1.1\r\nHost: football.kulichki.net\r\n\r\n'
+    assert drained.pop() == expected
 
 
 @pytest.mark.asyncio
 @pytest.mark.cls
-async def test_get_status():
-    URLS = [
-        'https://www.google.com/',
-        'http://government.ru/structure/',
-        'https://www.youtube.com/watch?v=5_9x7czHJOM',
-        'https://primero1800.store/',
-        'default',
-        'http://invalid'
+@pytest.mark.parametrize(
+    ('URL', 'hostname', 'scheme', 'status'),
+    [
+        ('https://www.google.com/', 'www.google.com', 'https', 'HTTP/1.1 200 OK'),
+        ('http://government.ru/structure/', 'government.ru', 'http', 'HTTP/1.1 200 OK'),
+        ('https://www.youtube.com/watch?v=5_9x7czHJOM', 'www.youtube.com', 'https', 'HTTP/1.1 301 Moved Permanently'),
+        ('https://primero1800.store/', 'primero1800.store', 'https', 'HTTP/1.1 200 OK'),
+        ('default', None, '', 'HTTP/1.1 400 Bad Request'),
+        ('http://invalid', 'invalid', 'http', '[Errno -2] Name or service not known'),
     ]
+)
+async def test_get_status(URL, hostname, scheme, status):
 
-    statuses = [await get_status(url) for url in URLS]
-    cms = [OpenConnectionManager(urllib.parse.urlsplit(url)) for url in URLS]
+    status_to_assert = await get_status(URL)
+    cm = OpenConnectionManager(urllib.parse.urlsplit(URL))
 
-    assert cms[1].url_parsed.hostname == 'government.ru'
-    assert cms[2].url_parsed.hostname == 'www.youtube.com'
-    assert cms[3].url_parsed.hostname == 'primero1800.store'
-    assert cms[4].url_parsed.hostname is None
-    assert cms[5].url_parsed.hostname == 'invalid'
-
-    assert cms[0].url_parsed.scheme == 'https'
-    assert cms[1].url_parsed.scheme == 'http'
-    assert cms[4].url_parsed.scheme == ''
-    assert cms[5].url_parsed.scheme == 'http'
-
-    assert statuses[0]  == 'HTTP/1.1 200 OK'
-    assert statuses[1] == 'HTTP/1.1 200 OK'
-    assert statuses[2] == 'HTTP/1.1 301 Moved Permanently'
-    assert statuses[3] == 'HTTP/1.1 200 OK'
-    assert statuses[4] == 'HTTP/1.1 400 Bad Request'
-    assert statuses[5] == '[Errno -2] Name or service not known'
+    assert cm.url_parsed.hostname == hostname
+    assert cm.url_parsed.scheme == scheme
+    assert status_to_assert == status
 
 
 
