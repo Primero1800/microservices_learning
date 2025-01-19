@@ -4,14 +4,20 @@ from functools import partial
 import httpx
 from httpx import UnsupportedProtocol
 
+
 class ContextedTask:
     def __init__(self, task, **kwargs):
         self.task = task
         self.params = kwargs
 
-
     def __getitem__(self, item):
         return self.params[item]
+
+    def items(self):
+        return self.params.items()
+
+    def to_dict(self):
+        return {key: value for key, value in self.items()}
 
 
 class AsyncDataGetterClient(httpx.AsyncClient):
@@ -33,9 +39,11 @@ class AsyncDataGetterClient(httpx.AsyncClient):
             return response.status_code, response.text, None
 
 
-def callback(task, name=None):
+def callback(task, kwargs=None):
+
     print('\n*****************************************************************************************************\n')
-    print(name)
+    print(kwargs['name']) if kwargs and 'name' in kwargs else print('Noname')
+
     print(task.result()[0])
     print(task.result()[1])
     print('jsonError: ', task.result()[2])
@@ -56,13 +64,13 @@ async def main():
             ContextedTask(
                 asyncio.create_task(
                     client.get_data_from_url(url), ),
-                nnname=url)
+                name=url)
             for url in urls
         ]
-        [contexted_task.task.add_done_callback(partial(callback, name=contexted_task['nnname'])) for contexted_task in contexted_tasks]
+
+        [contexted_task.task.add_done_callback(partial(callback, kwargs=contexted_task.to_dict())) for contexted_task in contexted_tasks]
 
         results = await asyncio.gather(*(contexted_task.task for contexted_task in contexted_tasks))
-
 
 
 if __name__ == "__main__":
