@@ -29,7 +29,7 @@ def resize_image(image_path, output_path, size):
 
 
 @app1.task(bind=True)
-@retry(timeout=10)
+@retry(timeout=5)
 def crop_image(image_path, output_path, crop_box):
     with Image.open(image_path) as img:
         cropped_img = img.crop(crop_box)
