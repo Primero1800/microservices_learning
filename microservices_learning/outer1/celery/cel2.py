@@ -1,6 +1,7 @@
 from celery import Celery
 from PIL import Image
 
+
 app = Celery('cel_processor', broker='redis://localhost:6379/0')
 
 @app.task
