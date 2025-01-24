@@ -8,6 +8,11 @@ from PIL import Image
 app1 = Celery('image_processor', broker='amqp://guest:guest@localhost:5672//')
 #app2 = Celery('image_processor2', broker='redis://localhost:6379/0')
 
+app1.conf.broker_connection_always_reconnect = True
+app1.conf.broker_connection_retry_on_startup = True
+
+
+
 def retry(timeout=10):
     def decorator(func):
         @wraps(func)
