@@ -1,0 +1,10 @@
+version: '3.8'
+
+services:
+  flower:
+    image: mher/flower
+    container_name: flower
+    restart: always
+    ports:
+      - "5555:5555"
+    command: ["flower", "--broker=amqp://guest:guest@rabbitmq:5672//"]
