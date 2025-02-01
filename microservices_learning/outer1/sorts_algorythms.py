@@ -1,14 +1,15 @@
 from outer1.ready_decorators.timed import timed
 
 CYCLE = 1000
-l = [0, 4, 7, 1, 5, 8, 9, 3, 4, 2, 4, 6, 3, 6] * CYCLE
+# l = [0, 4, 7, 1, 5, 8, 9, 3, 4, 2, 4, 6, 3, 6] * CYCLE
+l = [n for n in range(100 * CYCLE, -1, -1)]
 
 
 @timed
 def sort_brute(l):
     n = len(l)
     for i in range(n):
-        for j in range(i+1, n):
+        for j in range(i + 1, n):
             if l[j] < l[i]:
                 l[i], l[j] = l[j], l[i]
     return l
@@ -20,8 +21,8 @@ def sort_buble(l):
     for i in range(n):
         changed = False
         for k in range(n - i - 1):
-            if l[k] < l[k+1]:
-                l[k], l[k+1] = l[k+1], l[k]
+            if l[k] < l[k + 1]:
+                l[k], l[k + 1] = l[k + 1], l[k]
                 changed = True
         if not changed:
             break
