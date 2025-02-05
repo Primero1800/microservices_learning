@@ -20,9 +20,6 @@ class Kolbas:
     def __repr__(self):
         return f"Kolbas({', '.join(f'{key}={value}' for key, value in self.__dict__.items())})"
 
-    def __str__(self):
-        return self.__repr__()
-
 
 def get__app_name():
     return os.path.basename(__file__).split('.')[0]
@@ -44,10 +41,18 @@ def main():
         client.rpush(app_name, json.dumps(100500))
 
         kolbas1 = Kolbas(name='Ivan', age=29)
-        d = 2
         client.rpush(app_name, json.dumps(kolbas1.to_json()))
 
+        client.hset(app_name+'h', 'hset', 1)
+        client.hset(app_name + 'h', 'hset3', 3)
+
         print(client.lrange(app_name, 0, -1))
+        print()
+
+        print(client.hgetall(app_name+'h'))
+        print()
+
+        client.hdel(app_name+'h', *client.hkeys(app_name+'h'))
 
         while True:
             item = client.lpop(app_name)
