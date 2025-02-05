@@ -9,25 +9,40 @@ keys = []
 def main():
     with redis.Redis(**redis_params) as client:
         prefix = get_prefix()
-        d = 2
         while True:
-            print('\nQUIT - escape, SHOW - print values, DELETE - delete entered values, WASTE - show waste in redis')
+            print('\nQUIT - escape, SHOW - print values, DELETE - delete entered values, WASTE SHOW - show waste in redis, WASTE DELETE - delete waste in redis...')
             key = input('Input key: ')
+
             if key == 'QUIT':
                 delete_values(client, prefix)
+                client.delete(*get_wasted_keys(client, prefix).values())
+
                 break
+
             elif key == 'SHOW':
                 show_values(client, prefix)
+
             elif key == 'DELETE':
                 delete_values(client, prefix)
-            elif key == 'WASTE':
-                wasted_keys = client.keys(pattern=f'{prefix}*')
+
+            elif key == "WASTE SHOW":
+                wasted_keys = get_wasted_keys(client, prefix)
+                if wasted_keys:
+                    print('Waste in Redis from Application: ')
+                    for wkey in wasted_keys:
+                        print(f"{wkey}: {client.get(wasted_keys[wkey]).decode()},     ** Redis key: {wasted_keys[wkey]}")
+                else:
+                    print('No waste')
+
+
+            elif key == 'WASTE DELETE':
+                wasted_keys = get_wasted_keys(client, prefix)
                 if wasted_keys:
                     print('Waste from application in Redis:')
-                    [print(key.decode()) for key in wasted_keys]
-                    client.delete(' '.join(key.decode() for key in wasted_keys))
-                    keys.clear()
-                    print('Waste and keys deleted')
+                    print(*wasted_keys.values())
+                    # wkeys = [key for key in wasted_keys.values()]
+                    client.delete(*wasted_keys.values())
+                    print('Waste deleted')
                 else:
                     print('No waste in Redis')
 
@@ -37,6 +52,12 @@ def main():
                 if result:
                     keys.append(key)
 
+
+def get_wasted_keys(client, prefix):
+    return {
+        key.decode().split('_')[-1]: key.decode() for key in client.keys(pattern=f'{prefix}*')
+        if key.decode().split('_')[-1] not in keys
+    }
 
 def get_prefix():
     return '_'.join(
