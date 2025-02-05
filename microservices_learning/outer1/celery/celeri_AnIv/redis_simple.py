@@ -24,17 +24,17 @@ def main():
             elif key == 'DELETE':
                 delete_values(client, prefix)
 
-            elif key == "WASTE SHOW":
+            elif key == "SHOW WASTE":
                 wasted_keys = get_wasted_keys(client, prefix)
                 if wasted_keys:
                     print('Waste in Redis from Application: ')
                     for wkey in wasted_keys:
-                        print(f"{wkey}: {client.get(wasted_keys[wkey]).decode()},     ** Redis key: {wasted_keys[wkey]}")
+                        print(f"{wkey}: {client.get(wasted_keys[wkey]).decode()},     ** Redis key: {wasted_keys[wkey]}")  ########### mget
                 else:
                     print('No waste')
 
 
-            elif key == 'WASTE DELETE':
+            elif key == 'DELETE WASTE':
                 wasted_keys = get_wasted_keys(client, prefix)
                 if wasted_keys:
                     print('Waste from application in Redis:')
@@ -44,9 +44,18 @@ def main():
                 else:
                     print('No waste in Redis')
 
+            elif key == 'SHOW TTL':
+                all_keys = get_all_keys(client, prefix)
+                if all_keys:
+                    print('Redis application keys ttl:')
+                    for key in all_keys.values():
+                        print(f"{key}: {client.get(key).decode()}, TTL: {client.ttl(key)}")
+                else:
+                    print('No application keys in redis')
+
             else:
                 value = input('Input value: ')
-                result = client.set(prefix+key, value)
+                result = client.set(prefix+key, value, ex= 20 * 60)
                 if result:
                     keys.append(key)
 
@@ -56,6 +65,13 @@ def get_wasted_keys(client, prefix):
         key.decode().split('_')[-1]: key.decode() for key in client.keys(pattern=f'{prefix}*')
         if key.decode().split('_')[-1] not in keys
     }
+
+
+def get_all_keys(client, prefix):
+    return {
+        key.decode().split('_')[-1]: key.decode() for key in client.keys(pattern=f'{prefix}*')
+    }
+
 
 def get_prefix():
     return '_'.join(
