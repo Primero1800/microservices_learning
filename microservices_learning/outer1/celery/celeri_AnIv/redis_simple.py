@@ -55,7 +55,7 @@ def main():
 
             else:
                 value = input('Input value: ')
-                result = client.set(prefix+key, value, ex= 20 * 60)
+                result = client.rpushset(prefix+key, value, ex= 20 * 60)
                 if result:
                     keys.append(key)
 
