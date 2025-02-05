@@ -5,7 +5,6 @@ redis_params = config.REDIS_PARAMS
 keys = []
 
 
-
 def main():
     with redis.Redis(**redis_params) as client:
         prefix = get_prefix()
@@ -40,7 +39,6 @@ def main():
                 if wasted_keys:
                     print('Waste from application in Redis:')
                     print(*wasted_keys.values())
-                    # wkeys = [key for key in wasted_keys.values()]
                     client.delete(*wasted_keys.values())
                     print('Waste deleted')
                 else:
