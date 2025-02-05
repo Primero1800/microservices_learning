@@ -33,5 +33,5 @@ def problemator():
             else:
                 client.lpush('problems', problem)
 
-
-problemator()
+if __name__ == "__main__":
+    problemator()

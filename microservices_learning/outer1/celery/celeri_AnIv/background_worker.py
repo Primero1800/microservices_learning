@@ -7,7 +7,7 @@ redis_params = config.REDIS_PARAMS
 
 with redis.Redis(**redis_params) as client:
     while True:
-        problem = client.brpop('problems')[1].decode()
+        problem = client.brpop('problems')[1].decode() # prpop -> (b'problems', b'2+2')[1]
         try:
             result = eval(problem)
         except Exception as error:
