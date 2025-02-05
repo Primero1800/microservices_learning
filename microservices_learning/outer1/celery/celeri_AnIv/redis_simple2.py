@@ -44,7 +44,14 @@ def main():
         client.rpush(app_name, json.dumps(kolbas1.to_json()))
 
         client.hset(app_name+'h', 'hset', 1)
-        client.hset(app_name + 'h', 'hset3', 3)
+        client.hset(app_name + 'h', 'hset2', 2)
+
+        client.hset(app_name+'h', mapping={
+            'hmset4': 44,
+            'hmset5': 55
+        })
+
+
 
         print(client.lrange(app_name, 0, -1))
         print()
