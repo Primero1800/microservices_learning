@@ -17,7 +17,7 @@ DB_NAME = 'mineshop7_1'
 CONNECTION_STRING = f'{DB_ENGINE}://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}'
 
 engine = create_engine(CONNECTION_STRING, echo=True)
-Session = sessionmaker(bind=engine)
+Session = sessionmaker(bind=engine, autoflush=True)
 
 
 class Base(DeclarativeBase):
