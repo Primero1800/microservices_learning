@@ -2,7 +2,7 @@ from datetime import datetime
 import sqlalchemy as sqla
 
 from pydantic import BaseModel, Field, ConfigDict, ValidationError
-from sqlalchemy.orm import declarative_base, sessionmaker, DeclarativeBase
+from sqlalchemy.orm import sessionmaker, DeclarativeBase
 from sqlalchemy import create_engine, text, Column, Integer, String, DateTime, select
 from typing_extensions import Annotated, Optional
 
@@ -16,7 +16,7 @@ DB_NAME = 'mineshop7_1'
 # Строка подключения к базе данных
 CONNECTION_STRING = f'{DB_ENGINE}://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}'
 
-engine = create_engine(CONNECTION_STRING)
+engine = create_engine(CONNECTION_STRING, echo=True)
 Session = sessionmaker(bind=engine)
 
 
