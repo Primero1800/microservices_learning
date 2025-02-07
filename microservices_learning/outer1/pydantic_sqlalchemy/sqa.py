@@ -76,7 +76,7 @@ def get_posts_by_user_gt(user_id=None):
     if not user_id:
         return []
     with Session() as session:
-        stmt = sqla.select(PostORM).where(PostORM.user_id > user_id)
+        stmt = sqla.select(PostORM).where(PostORM.user_id > user_id) # filter(user_id > user_id) вместо where
         posts = session.execute(stmt).scalars().all()
         #posts = session.execute(stmt).fetchall()
 
